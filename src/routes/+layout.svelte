@@ -6,7 +6,9 @@
             <span class="visually-hidden">Loading...</span>
             </div>
         {/if}
-        <slot/>
+        <div class={$loading ? 'hidden' : ''}>
+            <slot/>
+        </div>
     </div>
     <Footer/>
 </div>
@@ -26,15 +28,14 @@
         $loading = true;
         if (loggedUser) {
             $user = loggedUser;
-            console.log(loggedUser);
-            const userRef = doc(db, 'users', loggedUser.uid);
-            onSnapshot(userRef, async (docSnapshot) => {
-            let docsData = docSnapshot.data();
-            if (!docsData) {
-                docsData = {team: new Array(6).fill().map(() => ({}))}
-            }
-            this.setTeam(docsData.team)
-        })
+            // const userRef = doc(db, 'users', loggedUser.uid);
+            // onSnapshot(userRef, async (docSnapshot) => {
+            // let docsData = docSnapshot.data();
+            // if (!docsData) {
+            //     docsData = {team: new Array(6).fill().map(() => ({}))}
+            // }
+            // // this.setTeam(docsData.team)
+            // })
         } else {
             $user = null;
         }
@@ -42,6 +43,8 @@
         });
     });
 </script>
+
+
 
 <style>
     #app {
