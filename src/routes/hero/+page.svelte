@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import { loading, addToFavorites, removeFromFavorites, favorites } from '@/store';
+	import { loading, addToFavorites, removeFromFavorites, favorites, user } from '@/store';
 	import ApiRequester from '@/integrations/heroApi';
 
 	$: id = $page.url.searchParams.get('id');
@@ -114,16 +114,18 @@
 					{hero.biography.publisher}
 				</div>
 			</div>
-			{#if $favorites && $favorites.includes(hero.id)}
-				<div class="button-container">
-					<div class="btn btn-danger" on:click={removeFromFavorites(hero)}>
-						Remove from favorites
+			{#if $user}
+				{#if $favorites && $favorites.includes(hero.id)}
+					<div class="button-container">
+						<div class="btn btn-danger" on:click={removeFromFavorites(hero)}>
+							Remove from favorites
+						</div>
 					</div>
-				</div>
-			{:else}
-				<div class="button-container">
-					<div class="btn btn-primary" on:click={addToFavorites(hero)}>Add to favorites</div>
-				</div>
+				{:else}
+					<div class="button-container">
+						<div class="btn btn-primary" on:click={addToFavorites(hero)}>Add to favorites</div>
+					</div>
+				{/if}
 			{/if}
 		</div>
 	</div>
