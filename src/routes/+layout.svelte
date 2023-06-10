@@ -1,0 +1,68 @@
+<div id="app">
+    <Navbar/>
+    <div class="content">
+        {#if $loading}
+            <div class="spinner-border text-primary loading" role="status" style="width: 5rem; height: 5rem;">
+            <span class="visually-hidden">Loading...</span>
+            </div>
+        {/if}
+        <slot/>
+    </div>
+    <Footer/>
+</div>
+
+
+<script>
+    import { onMount } from "svelte";
+    import { getAuth, onAuthStateChanged } from "firebase/auth";
+    import { doc, onSnapshot } from "firebase/firestore";
+    import { db, auth } from "../integrations/firebase";
+    import { user, loading } from "../store";
+    import Navbar from "../components/navbar.svelte";
+    import Footer from "../components/footer.svelte";
+
+    onMount(() => {
+        onAuthStateChanged(auth, (loggedUser) => {
+        $loading = true;
+        if (loggedUser) {
+            $user = loggedUser;
+            console.log(loggedUser);
+            const userRef = doc(db, 'users', loggedUser.uid);
+            onSnapshot(userRef, async (docSnapshot) => {
+            let docsData = docSnapshot.data();
+            if (!docsData) {
+                docsData = {team: new Array(6).fill().map(() => ({}))}
+            }
+            this.setTeam(docsData.team)
+        })
+        } else {
+            $user = null;
+        }
+        $loading = false;
+        });
+    });
+</script>
+
+<style>
+    #app {
+      font-family: 'Poppins';
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    .content {
+      padding: 1rem;
+    }
+    
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -1rem;
+      margin-left: -1rem;
+      width: 50%;
+    }
+    </style>
