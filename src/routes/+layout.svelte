@@ -16,10 +16,10 @@
 
 <script>
     import { onMount } from "svelte";
-    import { getAuth, onAuthStateChanged } from "firebase/auth";
+    import { onAuthStateChanged } from "firebase/auth";
     import { doc, onSnapshot } from "firebase/firestore";
     import { db, auth } from "../integrations/firebase";
-    import { user, loading } from "../store";
+    import { user, loading, favorites } from "../store";
     import Navbar from "../components/navbar.svelte";
     import Footer from "../components/footer.svelte";
 
@@ -28,16 +28,20 @@
         $loading = true;
         if (loggedUser) {
             $user = loggedUser;
-            // const userRef = doc(db, 'users', loggedUser.uid);
-            // onSnapshot(userRef, async (docSnapshot) => {
-            // let docsData = docSnapshot.data();
-            // if (!docsData) {
-            //     docsData = {team: new Array(6).fill().map(() => ({}))}
-            // }
-            // // this.setTeam(docsData.team)
-            // })
+            const userRef = doc(db, 'users', loggedUser.uid);
+            onSnapshot(userRef, async (docSnapshot) => {
+            let docsData = docSnapshot.data();
+            if (!docsData) {
+                docsData = {favorites: []}
+            }
+            if (!docsData.favorites) {
+                docsData.favorites = [];
+            }
+            $favorites = docsData.favorites;
+            })
         } else {
             $user = null;
+            $favorites = [];
         }
         $loading = false;
         });

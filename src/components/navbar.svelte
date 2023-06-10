@@ -24,7 +24,7 @@
                         <img src={$user.photoURL} alt="Profile" class="profile-img">
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item">Profile</a></li>
+                        <li><a class="dropdown-item" href="/profile">Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" on:click={logOut}>Log Out</a></li>
                     </ul>

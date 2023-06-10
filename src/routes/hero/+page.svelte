@@ -101,9 +101,15 @@
                 {hero.biography.publisher}
             </div>
         </div>
+        {#if $favorites && $favorites.includes(hero.id)}
         <div class="button-container">
-            <div class="btn btn-primary">Agregar a favoritos</div>
+            <div class="btn btn-danger" on:click={removeFromFavorites(hero)}>Remove from favorites</div>
         </div>
+        {:else}
+        <div class="button-container">
+            <div class="btn btn-primary" on:click={addToFavorites(hero)}>Add to favorites</div>
+        </div>
+        {/if}
     </div>
 </div>
 
@@ -113,7 +119,7 @@
 <script>
     import { onMount } from "svelte";
     import { page } from '$app/stores';
-    import { loading } from "@/store";
+    import { loading, addToFavorites, removeFromFavorites, favorites } from "@/store";
     import ApiRequester from "@/integrations/heroApi";
 
     $: id = $page.url.searchParams.get("id")

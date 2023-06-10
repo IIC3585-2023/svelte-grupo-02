@@ -1,6 +1,7 @@
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
 import { browserLocalPersistence, setPersistence, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
-import { auth } from "./integrations/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "./integrations/firebase";
 
 const user = writable(null);
 const loading = writable(false);
@@ -29,5 +30,34 @@ async function logOut() {
   }
 }
 
-export { user, loading, favorites, signIn, logOut };
+async function addToFavorites(hero) {
+  favorites.update((items) => {
+    if (items.some(item => item.id === hero.id)) {
+      return items;
+    }
+    return [...items, hero.id]
+  });
+  const userValue = get(user);
+  const favoritesValue = get(favorites);
+  const userRef = doc(db, 'users', userValue.uid);
+  try {
+    await setDoc(userRef, {favorites: favoritesValue}, {merge: true});
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function removeFromFavorites(hero) {
+  favorites.update((items) => items.filter(item => item !== hero.id));
+  const userValue = get(user);
+  const favoritesValue = get(favorites);
+  const userRef = doc(db, 'users', userValue.uid);
+  try {
+    await setDoc(userRef, {favorites: favoritesValue}, {merge: true});
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { user, loading, favorites, signIn, logOut, addToFavorites, removeFromFavorites };
 
