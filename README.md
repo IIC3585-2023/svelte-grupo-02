@@ -1,4 +1,4 @@
-# Tarea 5 Svelte - Grupo 2
+# Tarea 6 Svelte - Grupo 2
 
 Tarea desarrollada utilizando el framework Svelte, SvelteKit y Firebase como base de datos y autenticador.
 Disponible en: https://spontaneous-syrniki-fc8a2d.netlify.app/
